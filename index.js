@@ -4,7 +4,6 @@
         return new Create()
     };
 
-
     Object.prototype.keys1 = function keys(prop){
         let res = [];
         let i = 0;
@@ -17,10 +16,10 @@
     };
 
     Array.prototype.pop1 = function(){
-        let lastInd = this.length-1;
-        let deleted = this[lastInd];
-        this.length -= 1;
-        return deleted;
+            let lastInd = this.length-1;
+            let deleted = this[lastInd];
+            this.length -= 1;
+            return deleted;
     };
 
     Array.prototype.push1 = function(){
@@ -112,10 +111,6 @@
 
     };
 
-    Function.prototype.bind = function () {
-
-    };
-
     Object.prototype.freeze = function (prop) {
         
     };
@@ -134,9 +129,36 @@
         }
     };
 
+    Promise.prototype.ALL = function promise(promises) {
+        return new Promise(function(resolve, reject){
+            let result = [];
+            let coutPromises = promises.length;
+            promises.forEach(function (promise, i) {
+                if(!(promise instanceof Promise)) {
+                    result[i] = promise;
+                    coutPromises--;
+                } else {
+                    promise.then(
+                    data => {
+                        result[i] = data;
+                        coutPromises--;
+                        if(!coutPromises){
+                            resolve(result);
+                        }
+                    }
+                ).catch(err => reject(err))
+                }
+            })
+        })
+    };
 
-   /* let arr = [2,3,'6'];
-    //arr.reverse1()
-    console.log(arr.reduce1(function(sum, current) {
-        return sum + current;
-    }))*/
+    Function.prototype.BIND = function (context) {
+        let newArg = Array.prototype.slice.call(arguments, 1);
+        let toBind = this;
+        if(typeof(toBind) !== 'function') {
+            throw new Error('not a func')
+        }
+        return function () {
+            return toBind.apply(context,newArg)
+        }
+    };
